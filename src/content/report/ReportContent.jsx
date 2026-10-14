@@ -205,6 +205,10 @@ export function ReportContent() {
           id={narrativeId("apc-report:byline")} className="report-byline" label="Edit author byline"
           value={text("Prepared by Punpiti Piamsa-nga", "จัดทำโดย พันธุ์ปิติ เปี่ยมสง่า")}
         />
+        <RichNarrative
+          id={narrativeId("apc-report:doi")} className="report-byline" label="Edit report DOI"
+          value="DOI: [10.5281/zenodo.23367498](https://doi.org/10.5281/zenodo.23367498)"
+        />
       </header>
 
       <ReportSection
@@ -442,6 +446,13 @@ OpenAlex มี journal sources ทั้งหมด 217,114 แห่ง แ�
 ผลทั้งหมดเป็นความสัมพันธ์ระดับวารสารในภาพตัดขวาง APC สูงอาจสะท้อนสำนักพิมพ์ สาขา โมเดล OA อายุ ขนาด ชื่อเสียง และอำนาจตั้งราคา หลักฐานนี้รองรับข้อสรุปว่า APC และ citation signals เคลื่อนไปในทิศทางเดียวกันโดยเฉลี่ย และไม่รองรับข้อสรุปว่าเพิ่ม APC แล้วคุณภาพสูงขึ้นหรือวารสารแพงกว่าดีกว่าเสมอ`)}
         />
       </ReportSection>
+      <RichNarrative
+        id={narrativeId("apc-report:citation")} className="report-citation" label="Edit suggested citation"
+        value={text(
+          `## Cite this report\n\nPiamsa-nga, P. (2026). *Higher journal fees are associated with more citations, but price is not a quality score*. Zenodo. [https://doi.org/10.5281/zenodo.23367498](https://doi.org/10.5281/zenodo.23367498)\n\nThis DOI links to the archived report on Zenodo. The live website may receive later updates.`,
+          `## การอ้างอิงรายงานนี้\n\nPiamsa-nga, P. (2026). *Higher journal fees are associated with more citations, but price is not a quality score*. Zenodo. [https://doi.org/10.5281/zenodo.23367498](https://doi.org/10.5281/zenodo.23367498)\n\nDOI นี้เชื่อมไปยังรายงานที่เก็บถาวรบน Zenodo ส่วนหน้าเว็บอาจมีการปรับปรุงภายหลัง`
+        )}
+      />
     </article>
   );
 }

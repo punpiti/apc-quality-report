@@ -25,6 +25,10 @@
   min-width: 0;
 }
 
+.report-citation {
+  overflow-wrap: anywhere;
+}
+
 .report-sortable-sections {
   display: grid;
   gap: 40px;

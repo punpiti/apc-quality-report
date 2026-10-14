@@ -22,7 +22,13 @@ export function addAnalytics(input, output) {
 </script>
 `;
   const publicStyles = readFileSync(new URL("./public-report.css", import.meta.url), "utf8");
-  const html = original.replace("<head>", `<head>\n<meta name="author" content="Punpiti Piamsa-nga">\n<style id="apc-public-report-controls">${publicStyles}</style>${analytics}`);
+  const citationMetadata = `
+<meta name="citation_author" content="Punpiti Piamsa-nga">
+<meta name="citation_title" content="Higher journal fees are associated with more citations, but price is not a quality score">
+<meta name="citation_publication_date" content="2026/10/14">
+<meta name="citation_doi" content="10.5281/zenodo.23367498">
+`;
+  const html = original.replace("<head>", `<head>\n<meta name="author" content="Punpiti Piamsa-nga">${citationMetadata}\n<style id="apc-public-report-controls">${publicStyles}</style>${analytics}`);
   writeFileSync(output, html);
   return { measurementId, bytes: Buffer.byteLength(html), sha256: createHash("sha256").update(html).digest("hex") };
 }

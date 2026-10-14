@@ -1,5 +1,6 @@
 cff-version: 1.2.0
-message: "If you use this report, cite this repository and the archived version when its DOI is available."
+message: "If you use this report, cite the archived report using its Zenodo DOI."
+doi: "10.5281/zenodo.23367498"
 title: "Higher journal fees are associated with more citations, but price is not a quality score"
 authors:
   - family-names: "Piamsa-nga"
