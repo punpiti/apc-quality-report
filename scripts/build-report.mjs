@@ -38,4 +38,6 @@ const receipt = addAnalytics(
   join(project, ".data-app-offline/exports/report.html"),
   join(repo, "site/apc-quality-report.html"),
 );
+// GitHub Pages serves index.html at the project URL; Urban retains its named URL.
+cpSync(join(repo, "site/apc-quality-report.html"), join(repo, "site/index.html"));
 console.log(JSON.stringify({ output: "site/apc-quality-report.html", scratch, ...receipt }));

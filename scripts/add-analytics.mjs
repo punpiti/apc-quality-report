@@ -21,8 +21,7 @@ export function addAnalytics(input, output) {
   gtag("config", "${measurementId}", { anonymize_ip: true });
 </script>
 `;
-  const html = original.replace('<html lang="en">', '<html lang="th">')
-    .replace("<head>", `<head>${analytics}`);
+  const html = original.replace("<head>", `<head>${analytics}`);
   writeFileSync(output, html);
   return { measurementId, bytes: Buffer.byteLength(html), sha256: createHash("sha256").update(html).digest("hex") };
 }

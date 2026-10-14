@@ -1,6 +1,6 @@
 {
   "id": "report:d8ca7fea-2e6b-4936-af64-63d73e7158f6",
-  "title": "APC สูงสัมพันธ์กับตัวชี้วัดการอ้างอิง แต่ราคาไม่ใช่คะแนนคุณภาพ",
+  "title": "Higher journal fees are associated with more citations, but price is not a quality score",
   "surface": "report",
   "status": "observed",
   "buildStatus": "complete",
@@ -8,7 +8,7 @@
   "filters": [],
   "report": {
     "asOf": "2026-10-14",
-    "originalQuestion": "ความสัมพันธ์ระหว่าง APC กับ Q, h-index และตัวชี้วัดคุณภาพวารสารอื่นใน OpenAlex เป็นอย่างไร"
+    "originalQuestion": "How are article processing charges associated with journal citation measures, quartiles, and curated journal lists?"
   },
   "queries": {
     "overview": {

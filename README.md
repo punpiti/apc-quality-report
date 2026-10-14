@@ -1,48 +1,59 @@
 # APC quality report
 
-รายงานภาษาไทยเรื่องความสัมพันธ์ระหว่างค่าตีพิมพ์บทความ (APC) กับการอ้างอิง จำนวนผลงาน Q ที่คำนวณจาก OpenAlex และบัญชีวารสาร Norway, JUFO และ ABDC
+An English-language report with a Thai translation examining the relationship between advertised article processing charges (APCs), citation measures, publication volume, OpenAlex-derived quartiles, and the Norway, JUFO, and ABDC journal lists.
 
-Live report: https://urban.cpe.ku.ac.th/apc-quality-report.html
+GitHub Pages: https://punpiti.github.io/apc-quality-report/
 
-ข้อมูลวารสาร 15,176 แห่ง ดึงเมื่อ 14 ตุลาคม 2026 รายงานมีข้อสรุปผู้บริหารภาษาง่าย ตัวเลือกสาขา และอภิธานศัพท์ รวมถึงความต่างระหว่าง Q, Top 10% / Tier 1 และ TCI
+Urban mirror: https://urban.cpe.ku.ac.th/apc-quality-report.html
+
+The analysis includes 15,176 journals, retrieved on 14 October 2026. The report opens in English; choose **ไทย** to read the Thai translation. The field selector has been removed. A static chart retains the comparison across fields. The glossary explains Q, Top 10% / Tier 1, TCI, citation measures, journal lists, and statistical terms.
 
 ## Files
 
-- `src/content/report/`: ต้นฉบับข้อความและกราฟ React พร้อม CSS
-- `src/theme.css`: ธีมของรายงาน
-- `data/report_snapshot.json`: ข้อมูลและที่มาซึ่งใช้ในรายงานฉบับปัจจุบัน
-- `data/*.csv`: ข้อมูลวารสารและตารางผลวิเคราะห์
-- `analysis/fetch_analyze_openalex.py`: สคริปต์ดึงข้อมูลและคำนวณผล
-- `site/apc-quality-report.html`: ไฟล์เว็บสมบูรณ์ที่ deploy แล้ว เปิดจากเครื่องได้
-- `scripts/`: สร้างรายงานและเพิ่ม Google Analytics
-- `DEPLOYMENT.md`: วิธีอัปเดตไฟล์รายงานและเส้นทางเว็บ
+- `src/content/report/`: React report, English narrative, Thai translation, and CSS
+- `src/theme.css`: report theme
+- `data/report_snapshot.json`: reviewed data and provenance for the current report
+- `data/*.csv`: journal extract and analytical results
+- `analysis/fetch_analyze_openalex.py`: data retrieval and analysis
+- `site/index.html`: complete report served at the GitHub Pages project URL
+- `site/apc-quality-report.html`: identical report served at the named Urban URL
+- `scripts/`: local report build and Google Analytics integration
+- `.github/workflows/pages.yml`: deploys the prebuilt `site/` directory
+- `CITATION.cff` and `CITATION.md`: citation metadata prepared for a future DOI
+- `DEPLOYMENT.md`: deployment and update instructions
 
 ## Build
 
-ใช้ Node.js และ Data Analytics plugin รุ่น 1.0.11 ของ Codex ซึ่งมี runtime สำหรับรายงานและกราฟ สคริปต์นี้เก็บ build ชั่วคราวไว้นอก repo เพื่อเลี่ยง build cache ใน OneDrive
+The local build requires Node.js and version 1.0.11 of the Codex Data Analytics plugin, which supplies the report runtime and charts. Build files are generated in a temporary directory outside the repository to keep caches out of OneDrive.
 
 ```bash
 node scripts/build-report.mjs
 ```
 
-หากติดตั้ง plugin ไว้ที่อื่น ให้ตั้ง `DATA_ANALYTICS_PLUGIN_ROOT` เป็น directory ของ plugin ที่มี `scripts/data-app.mjs` และ `scripts/prepare-data-app.mjs`
+Set `DATA_ANALYTICS_PLUGIN_ROOT` if the plugin is installed elsewhere. It must point to the directory containing `scripts/data-app.mjs` and `scripts/prepare-data-app.mjs`.
 
-ผลลัพธ์เขียนลง `site/apc-quality-report.html` พร้อม Google Analytics รหัส `G-BWX7PFH4XM` ซึ่งเป็นรหัสเดียวกับหน้าแรกของ urban.cpe.ku.ac.th การ build อย่างเดียวไม่ deploy ขึ้นเว็บ
+The build writes `site/apc-quality-report.html` and `site/index.html`, retaining Google Analytics measurement ID `G-BWX7PFH4XM`, the same ID used by the Urban homepage. A local build does not update the Urban server.
+
+The GitHub Pages workflow publishes the reviewed HTML committed to `site/`. It does not need the Codex plugin or install dependencies on the Actions runner. Enable **Settings → Pages → Source: GitHub Actions** for the repository. A push to `main` that changes `site/` then deploys the new report.
 
 ## Re-run analysis
 
-ใช้ Python environment ที่มี NumPy, pandas, requests และ SciPy โดยสร้าง environment ไว้นอก OneDrive
+Use a machine-local Python environment with the dependencies in `analysis/requirements.txt`. Keep environments outside OneDrive.
 
 ```bash
 python analysis/fetch_analyze_openalex.py
 ```
 
-ผลการรันใหม่จะอยู่ใน `analysis/` และ raw API cache อยู่ใน `/var/tmp/openalex-apc-quality-20261014` สคริปต์ใช้ cache ที่มีอยู่ ถ้าจะเปลี่ยนวันอ้างอิงหรือข้อมูล ให้ตรวจและเลือก cache ที่จะใช้ก่อนรัน
+New analysis outputs are written to `analysis/`. Raw API pages are cached at `/var/tmp/openalex-apc-quality-20261014`; the script reuses existing cache files. Review the cache before changing the data cutoff or refreshing the evidence.
 
-การวิเคราะห์ใหม่ต้องทบทวนตัวเลข ข้อสรุป และวันที่ในต้นฉบับรายงานด้วย ก่อนเปลี่ยน `data/report_snapshot.json` และสร้างไฟล์เว็บใหม่
+After rerunning the analysis, review the numbers, narrative, and evidence dates before updating `data/report_snapshot.json` and rebuilding the website. Recalculated results do not automatically update the report text.
 
 ## Interpretation
 
-ผลเป็นความสัมพันธ์ระดับวารสาร และยังไม่พิสูจน์สาเหตุของราคา APC ตัวเลข Q ในรายงานคำนวณจาก OpenAlex ภายในสาขา จึงใช้แทน Q ของ Scopus/JCR หรือ Tier 1 ตามประกาศทุนไม่ได้ ราคาเป็นราคาประกาศ ซึ่งอาจต่างจากเงินที่ผู้เขียนจ่ายจริง
+The results are journal-level associations and do not establish the causes of APC prices. The quartiles are calculated within OpenAlex fields and do not replace Scopus/JCR quartiles or Tier 1 funding classifications. APCs are advertised prices, which may differ from amounts actually paid.
 
-Repository นี้เก็บต้นฉบับที่เขียนสำหรับรายงานและไฟล์เว็บที่เผยแพร่แล้ว การสร้างเว็บใหม่ใช้ runtime จาก plugin ที่ติดตั้งอยู่ในเครื่อง
+The repository contains authored report source, analysis, data, and the complete published HTML. Rebuilding the HTML uses the runtime from the locally installed plugin.
+
+## Citation and DOI
+
+Citation metadata is supplied in `CITATION.cff`. No DOI is assigned by this repository or by GitHub Pages. Add the actual DOI after archiving a selected version with an archival service, and retain its commit identifier for reproducibility.

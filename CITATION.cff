@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use this report, cite this repository and the archived version when its DOI is available."
+title: "Higher journal fees are associated with more citations, but price is not a quality score"
+authors:
+  - family-names: "Piamsa-nga"
+    given-names: "Punpiti"
+repository-code: "https://github.com/punpiti/apc-quality-report"
+url: "https://punpiti.github.io/apc-quality-report/"
+abstract: >-
+  An English-language report with a Thai translation examining associations
+  between advertised article processing charges and journal citation measures,
+  OpenAlex-derived within-field quartiles, and curated journal lists.
+  The analysis uses 15,176 journal records retrieved from OpenAlex on
+  14 October 2026. Results describe associations and do not establish
+  causal effects of price on journal quality.
+keywords:
+  - article processing charges
+  - journals
+  - OpenAlex
+  - bibliometrics
+  - open access

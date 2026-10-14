@@ -37,6 +37,11 @@
   margin-inline: 0;
 }
 
+.report-language {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .report-eyebrow {
   color: var(--secondary);
   font-size: 12px;

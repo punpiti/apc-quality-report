@@ -1,14 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 
 import {
   DataComponent,
   EvidenceChart,
-  Filters,
   ReportSection,
   RichNarrative,
+  SegmentedControl,
   useDataApp,
-  useSectionFilters,
 } from "../../data-app-public.jsx";
+import { en } from "./report-en.js";
 
 const sourcePreviews = {
   "https://help.openalex.org/data/sources/": {
@@ -129,13 +129,17 @@ const metricLabels = {
 };
 
 export function ReportContent() {
+  const [language, setLanguage] = useState("en");
+  const thai = language === "th";
+  const text = (english, th) => thai ? th : english;
+  const narrativeId = (id) => thai ? `${id}:th` : id;
   const { reviewedRows, canEdit, mode, appTitle, setAppTitle } = useDataApp();
   const overviewRows = reviewedRows("overview");
   const [overview] = overviewRows;
   const allCorrelations = reviewedRows("correlations");
   const correlations = allCorrelations
     .filter((row) => row.population.startsWith("All known"))
-    .map((row) => ({ ...row, metric_label: metricLabels[row.metric] ?? row.metric }))
+    .map((row) => ({ ...row, metric_label: thai ? metricLabels[row.metric] ?? row.metric : row.metric }))
     .sort((a, b) => b.spearman_rho - a.spearman_rho);
   const quartiles = [...reviewedRows("quartiles")].sort((a, b) => a.group.localeCompare(b.group));
   const curatedRows = reviewedRows("curated_lists");
@@ -149,45 +153,18 @@ export function ReportContent() {
     }))
     .sort((a, b) => a.median_apc_usd - b.median_apc_usd);
   const fieldRows = reviewedRows("field_correlations");
-  const fieldScope = useSectionFilters([
-    {
-      id: "field_scope", label: "เลือกมุมมอง", field: "field", defaultValue: "all",
-      allLabel: "ภาพรวมทุกสาขา", searchable: true, queryIds: ["field_correlations"],
-      choiceLabels: fieldLabels,
-    },
-  ], {}, { id: "apc-field-scope", label: "เลือกดูภาพรวมหรือรายสาขา" });
-  const selectedField = fieldScope.values.field_scope;
-  const fieldScoped = fieldScope.componentProps("field_correlations", ["field"]);
-  const selectedFieldRow = selectedField === "all" ? null : fieldScoped.displayRows[0];
-  const fields = (selectedField === "all"
-    ? fieldScoped.displayRows.filter((row) => row.n >= 250)
-    : fieldScoped.displayRows)
-    .map((row) => ({ ...row, field_label: fieldLabels[row.field] ?? row.field }))
+  const fields = fieldRows.filter((row) => row.n >= 250)
+    .map((row) => ({ ...row, field_label: thai ? fieldLabels[row.field] ?? row.field : row.field }))
     .sort((a, b) => a.spearman_rho - b.spearman_rho);
-  const overallRecent = allCorrelations.find((row) => row.population.startsWith("All known")
-    && row.metric === "2-year mean citedness");
-  const selectedFieldLabel = fieldLabels[selectedField] ?? selectedField;
-  const fieldStrength = selectedFieldRow
-    ? Math.abs(selectedFieldRow.spearman_rho) >= 0.5 ? "เห็นแนวโน้มค่อนข้างชัด"
-      : Math.abs(selectedFieldRow.spearman_rho) >= 0.3 ? "เห็นแนวโน้มระดับปานกลาง"
-        : Math.abs(selectedFieldRow.spearman_rho) >= 0.15 ? "เห็นแนวโน้มค่อนข้างอ่อน"
-          : "แทบไม่เห็นแนวโน้ม"
-    : null;
-  const executiveSummary = selectedFieldRow
-    ? `ค่าตีพิมพ์ หรือ APC คือราคาที่วารสารประกาศเรียกเก็บต่อบทความ ผลของสาขา ${selectedFieldLabel} มาจากวารสาร ${number(selectedFieldRow.n)} แห่ง
-
-- ตัวแปรที่ดูในมุมมองนี้คือ “การอ้างอิงเฉลี่ยของงานช่วงสองปี” ซึ่งบอกว่างานที่วารสารเผยแพร่ในช่วงนั้นถูกนำไปอ้างอิงมากเพียงใด
-- ในสาขานี้ ราคาสูงกับการอ้างอิงมากมีแนวโน้มไปด้วยกัน และ${fieldStrength} ค่าความสัมพันธ์อยู่ที่ ${selectedFieldRow.spearman_rho.toFixed(2)}
-- แนวโน้มนี้${selectedFieldRow.spearman_rho >= overallRecent.spearman_rho ? "ชัดกว่าภาพรวม" : "อ่อนกว่าภาพรวม"}ทุกสาขา ซึ่งมีค่าความสัมพันธ์ ${overallRecent.spearman_rho.toFixed(2)}
-- ค่านี้บอกว่าราคาและการอ้างอิงเรียงสูงขึ้นด้วยกันมากน้อยแค่ไหน เช่น 0.40 ไม่ได้หมายความว่าราคาเพิ่ม 40% หรือราคาอธิบายคุณภาพได้ 40%
-- การเพิ่มราคายังไม่ได้พิสูจน์ว่าจะทำให้บทความถูกอ้างอิงมากขึ้น บัตรภาพรวม กราฟตัวชี้วัดสะสม Q และรายชื่อคัดสรรด้านล่างยังแสดงผลรวมทุกสาขา`
-    : `วารสารที่ค่าตีพิมพ์แพงกว่ามักมีผลงานที่ถูกอ้างอิงมากสะสมอยู่มากกว่า แต่ความสัมพันธ์กับการอ้างอิงของงานช่วงสองปีอ่อนกว่า ผลจากวารสาร ${number(overview?.journals)} แห่งให้ภาพดังนี้
+  const executiveSummary = thai
+    ? `วารสารที่ค่าตีพิมพ์แพงกว่ามักมีผลงานที่ถูกอ้างอิงมากสะสมอยู่มากกว่า แต่ความสัมพันธ์กับการอ้างอิงของงานช่วงสองปีอ่อนกว่า ผลจากวารสาร ${number(overview?.journals)} แห่งให้ภาพดังนี้
 
 - ตัวแปรที่สัมพันธ์กับราคาชัดที่สุดเมื่อดูทีละตัวคือ h-index หมายถึงวารสารมีผลงานที่ถูกอ้างอิงมากอยู่มากเพียงใด ค่าความสัมพันธ์กับราคาเท่ากับ 0.64
 - วารสารที่มียอดอ้างอิงสะสมมาก หรือมีจำนวนผลงานมาก ก็มักมีราคาสูงกว่าเช่นกัน ค่าความสัมพันธ์เท่ากับ 0.63 และ 0.55 ตามลำดับ จึงเห็นว่าราคาเกี่ยวข้องกับผลงานสะสมและขนาดของวารสารด้วย
 - หากดูการอ้างอิงเฉลี่ยของงานช่วงสองปี ความสัมพันธ์กับราคาเหลือ 0.34 วารสารแพงจึงไม่ได้มีงานช่วงล่าสุดที่ถูกอ้างอิงมากกว่าอย่างชัดเจนทุกแห่ง
 - เมื่อแบ่งวารสารตามการอ้างอิงภายในสาขา กลุ่มบนสุด หรือ Q1 มีราคากลาง ${usd(3280)} เทียบกับ ${usd(1500)} ในกลุ่มล่างสุด หรือ Q4 ราว 2.2 เท่า ส่วนระดับ Norway, JUFO และ ABDC ที่สูงกว่ามีราคากลางสูงกว่าประมาณ 500–600 ดอลลาร์
-- เมื่อนำหลายตัวแปรมาดูพร้อมกัน การอ้างอิงของงานช่วงสองปียังสัมพันธ์กับราคาสูง ส่วน h-index เปลี่ยนเป็นความสัมพันธ์ลบเล็กน้อย จึงยังสรุปไม่ได้ว่า h-index เป็นสาเหตุที่ทำให้แพง รายงานนี้ยังไม่ได้วัดต้นทุนและนโยบายตั้งราคาของสำนักพิมพ์`;
+- เมื่อนำหลายตัวแปรมาดูพร้อมกัน การอ้างอิงของงานช่วงสองปียังสัมพันธ์กับราคาสูง ส่วน h-index เปลี่ยนเป็นความสัมพันธ์ลบเล็กน้อย จึงยังสรุปไม่ได้ว่า h-index เป็นสาเหตุที่ทำให้แพง รายงานนี้ยังไม่ได้วัดต้นทุนและนโยบายตั้งราคาของสำนักพิมพ์`
+    : en.summary(number(overview?.journals));
   const coverageRows = reviewedRows("coverage");
   const adjustedRows = reviewedRows("adjusted_model");
   const allSources = {
@@ -201,64 +178,66 @@ export function ReportContent() {
   };
 
   return (
-    <article className="report-content" aria-label="OpenAlex APC and journal quality report">
+    <article className="report-content" lang={language} aria-label="OpenAlex APC and journal quality report">
       <header className="report-hero">
+        <div className="report-language">
+          <SegmentedControl ariaLabel="Report language" value={language} onChange={setLanguage}
+            options={[{ value: "en", label: "English" }, { value: "th", label: "ไทย" }]} />
+        </div>
         <div className="report-eyebrow">OPENALEX · 15,176 JOURNALS · DATA THROUGH 13 OCT 2026</div>
         <h1
           data-data-app-title
-          contentEditable={canEdit && mode === "edit"}
+          contentEditable={!thai && canEdit && mode === "edit"}
           suppressContentEditableWarning
-          aria-label={canEdit && mode === "edit" ? "Edit report heading" : undefined}
-          onBlur={canEdit && mode === "edit"
+          aria-label={!thai && canEdit && mode === "edit" ? "Edit report heading" : undefined}
+          onBlur={!thai && canEdit && mode === "edit"
             ? (event) => setAppTitle(event.currentTarget.textContent.trim() || appTitle)
             : undefined}
           onKeyDown={canEdit && mode === "edit" ? (event) => {
             if (event.key === "Enter") { event.preventDefault(); event.currentTarget.blur(); }
           } : undefined}
-        >{appTitle}</h1>
+        >{thai ? "APC สูงสัมพันธ์กับตัวชี้วัดการอ้างอิง แต่ราคาไม่ใช่คะแนนคุณภาพ" : appTitle}</h1>
         <RichNarrative
-          id="apc-report:description" className="report-deck" label="Edit report introduction"
-          value="เปรียบเทียบค่าตีพิมพ์ที่วารสารประกาศเรียกเก็บต่อบทความ (APC) กับการอ้างอิง จำนวนผลงาน และระดับจัดอันดับ เพื่อดูว่าวารสารราคาแพงมีลักษณะอย่างไร"
+          id={narrativeId("apc-report:description")} className="report-deck" label="Edit report introduction"
+          value={text(en.introduction, "เปรียบเทียบค่าตีพิมพ์ที่วารสารประกาศเรียกเก็บต่อบทความ (APC) กับการอ้างอิง จำนวนผลงาน และระดับจัดอันดับ เพื่อดูว่าวารสารราคาแพงมีลักษณะอย่างไร")}
         />
       </header>
 
       <ReportSection
-        id="apc-executive-summary" title="ข้อสรุปสำหรับผู้บริหาร" queryId="overview"
+        id="apc-executive-summary" title={text("Executive summary", "ข้อสรุปสำหรับผู้บริหาร")} queryId="overview"
         queryIds={["overview", "correlations", "quartiles", "curated_lists", "field_correlations", "adjusted_model"]}
         sourceRowsByQuery={{ overview: overviewRows, correlations: allCorrelations, quartiles,
-          curated_lists: curatedRows, field_correlations: fieldScoped.sourceRows, adjusted_model: adjustedRows }}
-        scopeFilters={fieldScoped.scopeFilters}
-        headerControls={<Filters {...fieldScope.filterProps} />}
+          curated_lists: curatedRows, field_correlations: fieldRows, adjusted_model: adjustedRows }}
         className="report-summary"
       >
         <RichNarrative
-          id="apc-executive-summary:body" className="report-summary-lead" label="Edit executive summary"
+          id={narrativeId("apc-executive-summary:body")} className="report-summary-lead" label="Edit executive summary"
           value={executiveSummary}
         />
       </ReportSection>
 
       <DataComponent
-        id="apc-key-metrics" title="ภาพรวมข้อมูล" queryId="overview" kind="custom"
+        id="apc-key-metrics" title={text("Dataset at a glance", "ภาพรวมข้อมูล")} queryId="overview" kind="custom"
         displayRows={overviewRows} sourceRows={overviewRows}
-        description="ค่าราคาเป็น list price ปัจจุบันที่ OpenAlex แปลงเป็น USD"
+        description={text("Advertised APC list prices converted to USD by OpenAlex", "ค่าราคาเป็น list price ปัจจุบันที่ OpenAlex แปลงเป็น USD")}
       >
         <div className="report-facts" data-reviewed-rows>
-          <div className="fact-card"><span>วารสาร</span><strong>{number(overview?.journals)}</strong><small>มี APC ระบุไว้</small></div>
-          <div className="fact-card"><span>APC มัธยฐาน</span><strong>{usd(overview?.median_apc_usd)}</strong><small>IQR {usd(overview?.apc_p25_usd)}–{usd(overview?.apc_p75_usd)}</small></div>
-          <div className="fact-card"><span>APC = USD 0</span><strong>{number(overview?.zero_apc_journals)}</strong><small>บันทึกว่าไม่มีค่าธรรมเนียม</small></div>
-          <div className="fact-card"><span>APC สูงสุด</span><strong>{usd(overview?.apc_max_usd)}</strong><small>ค่าที่พบในข้อมูล</small></div>
+          <div className="fact-card"><span>{text("Journals", "วารสาร")}</span><strong>{number(overview?.journals)}</strong><small>{text("with recorded APCs", "มี APC ระบุไว้")}</small></div>
+          <div className="fact-card"><span>{text("Median APC", "APC มัธยฐาน")}</span><strong>{usd(overview?.median_apc_usd)}</strong><small>IQR {usd(overview?.apc_p25_usd)}–{usd(overview?.apc_p75_usd)}</small></div>
+          <div className="fact-card"><span>APC = USD 0</span><strong>{number(overview?.zero_apc_journals)}</strong><small>{text("recorded as no charge", "บันทึกว่าไม่มีค่าธรรมเนียม")}</small></div>
+          <div className="fact-card"><span>{text("Highest recorded APC", "APC สูงสุด")}</span><strong>{usd(overview?.apc_max_usd)}</strong><small>{text("maximum in this dataset", "ค่าที่พบในข้อมูล")}</small></div>
         </div>
       </DataComponent>
 
       <section className="report-section">
         <ReportSection
-          id="apc-interpretation" title="ค่าตีพิมพ์แพงสัมพันธ์กับตัวแปรใดบ้าง" queryId="correlations"
+          id="apc-interpretation" title={text("Measures associated with higher fees", "ค่าตีพิมพ์แพงสัมพันธ์กับตัวแปรใดบ้าง")} queryId="correlations"
           queryIds={["correlations", "adjusted_model"]}
           sourceRowsByQuery={{ correlations: allCorrelations, adjusted_model: adjustedRows }} showHeading={false}
         >
           <RichNarrative
-            id="apc-interpretation:body" className="report-analysis" label="Edit correlation interpretation"
-            value={`## ค่าตีพิมพ์แพงสัมพันธ์กับตัวแปรใดบ้าง
+            id={narrativeId("apc-interpretation:body")} className="report-analysis" label="Edit correlation interpretation"
+            value={text(en.interpretation, `## ค่าตีพิมพ์แพงสัมพันธ์กับตัวแปรใดบ้าง
 
 เมื่อเปรียบเทียบวารสารทั้งหมดโดยดูทีละตัวแปร วารสารที่มีตัวเลขเหล่านี้สูงมักมีค่าตีพิมพ์สูงด้วย แต่ความชัดของแนวโน้มต่างกัน
 
@@ -278,95 +257,85 @@ export function ReportContent() {
 
 การวิเคราะห์เสริมเปรียบเทียบวารสารที่มีสาขา จำนวนผลงาน และลักษณะการเผยแพร่ใกล้เคียงกัน โดยใส่ตัวแปรเหล่านี้ในแบบจำลองเดียวกัน พบว่าการอ้างอิงเฉลี่ยของงานช่วงสองปียังสัมพันธ์กับราคาสูง ส่วน h-index กลับสัมพันธ์กับราคาต่ำลงเล็กน้อย ผลนี้แสดงว่าค่า 0.64 ในการดูทีละตัวแปรยังใช้สรุปว่า h-index เป็นตัวกำหนดราคาไม่ได้
 
-แบบจำลองยังไม่ครอบคลุมต้นทุน ชื่อเสียง และนโยบายตั้งราคาของสำนักพิมพ์ จึงตอบได้ว่าวารสารแพงมีลักษณะใดร่วมกัน แต่ยังตอบไม่ได้ว่าปัจจัยใดทำให้สำนักพิมพ์ตั้งราคาแพง`}
+แบบจำลองยังไม่ครอบคลุมต้นทุน ชื่อเสียง และนโยบายตั้งราคาของสำนักพิมพ์ จึงตอบได้ว่าวารสารแพงมีลักษณะใดร่วมกัน แต่ยังตอบไม่ได้ว่าปัจจัยใดทำให้สำนักพิมพ์ตั้งราคาแพง`)}
           />
         </ReportSection>
         <EvidenceChart
           id="apc-correlation-chart" queryId="correlations"
-          title="ตัวเลขสะสมสัมพันธ์กับราคาชัดกว่าการอ้างอิงของงานช่วงสองปี"
-          description="แท่งยาว = ราคาและตัวแปรนั้นเรียงสูงขึ้นด้วยกันชัดกว่า ดูทีละตัวแปร รวมวารสารที่ราคาเป็นศูนย์"
-          spec={correlationSpec} rows={correlations} sourceRows={allCorrelations} height={330}
+          title={text("Accumulated measures have stronger price correlations than recent citations", "ตัวเลขสะสมสัมพันธ์กับราคาชัดกว่าการอ้างอิงของงานช่วงสองปี")}
+          description={text("Longer bars indicate closer shared ordering with price. Each variable is examined separately; zero-price journals are included.", "แท่งยาว = ราคาและตัวแปรนั้นเรียงสูงขึ้นด้วยกันชัดกว่า ดูทีละตัวแปร รวมวารสารที่ราคาเป็นศูนย์")}
+          spec={{ ...correlationSpec, xLabel: text("Rank correlation with APC (Spearman ρ)", correlationSpec.xLabel) }} rows={correlations} sourceRows={allCorrelations} height={330}
         />
       </section>
 
       <section className="report-section">
-        <ReportSection id="apc-quartile-section" title="Q1 มี APC มัธยฐานประมาณสองเท่าของ Q4"
+        <ReportSection id="apc-quartile-section" title={text("The median fee for Q1 is about twice that for Q4", "Q1 มี APC มัธยฐานประมาณสองเท่าของ Q4")}
           queryId="quartiles" sourceRows={quartiles} showHeading={false}>
           <RichNarrative
-            id="apc-quartile-section:body" className="report-analysis" label="Edit quartile interpretation"
-            value={`## Q1 มี APC มัธยฐานประมาณสองเท่าของ Q4
+            id={narrativeId("apc-quartile-section:body")} className="report-analysis" label="Edit quartile interpretation"
+            value={text(en.quartiles, `## Q1 มี APC มัธยฐานประมาณสองเท่าของ Q4
 
 รายงานแบ่งวารสารในแต่ละสาขาออกเป็นสี่กลุ่ม โดยเรียงตามการอ้างอิงเฉลี่ยของงานช่วงสองปี Q1 คือกลุ่ม 25% แรกที่มีการอ้างอิงสูงสุด และ Q4 คือกลุ่ม 25% ท้าย เมื่อนำวารสารแต่ละกลุ่มมาดูราคา กลุ่ม Q1 มีราคากลาง ${usd(3280)} ต่อบทความ เทียบกับ ${usd(1500)} ใน Q4
 
 ราคากลางของ Q2 และ Q3 อยู่ที่ ${usd(3160)} และ ${usd(2990)} จึงเห็นว่าราคาไม่ได้เพิ่มเท่ากันทุกระดับ ช่องว่างที่เด่นอยู่ระหว่างกลุ่มล่างสุดกับกลุ่มอื่น การอยู่ Q1 ก็ไม่ได้หมายความว่าทุกวารสารในกลุ่มต้องแพงกว่าทุกวารสารใน Q4
 
-Q นี้คำนวณใหม่จากข้อมูล OpenAlex เพื่อเทียบวารสารภายในสาขาเดียวกัน จึงต่างจาก Q ที่แสดงใน Scopus/SCImago หรือ Journal Citation Reports ช่วงความไม่แน่นอน 95% ของราคากลางอยู่ที่ ${usd(3190)}–${usd(3290)} สำหรับ Q1 และ ${usd(1307)}–${usd(1680)} สำหรับ Q4`}
+Q นี้คำนวณใหม่จากข้อมูล OpenAlex เพื่อเทียบวารสารภายในสาขาเดียวกัน จึงต่างจาก Q ที่แสดงใน Scopus/SCImago หรือ Journal Citation Reports ช่วงความไม่แน่นอน 95% ของราคากลางอยู่ที่ ${usd(3190)}–${usd(3290)} สำหรับ Q1 และ ${usd(1307)}–${usd(1680)} สำหรับ Q4`)}
           />
         </ReportSection>
         <EvidenceChart
-          id="apc-quartile-chart" queryId="quartiles" title="APC มัธยฐานตาม OpenAlex field-adjusted quartile"
-          description="Q1 = 25% แรกของ 2-year mean citedness ภายในสาขาเดียวกัน"
+          id="apc-quartile-chart" queryId="quartiles" title={text("Median APC by OpenAlex-derived within-field quartile", "APC มัธยฐานตาม OpenAlex field-adjusted quartile")}
+          description={text("Q1 contains the top 25% by two-year mean citedness within each field", "Q1 = 25% แรกของ 2-year mean citedness ภายในสาขาเดียวกัน")}
           spec={quartileSpec} rows={quartiles} sourceRows={quartiles} height={320}
         />
       </section>
 
       <section className="report-section">
-        <ReportSection id="apc-list-section" title="Journal lists ที่เข้มขึ้นสัมพันธ์กับ APC ที่สูงขึ้นเล็กน้อย"
+        <ReportSection id="apc-list-section" title={text("Higher curated levels have somewhat higher median fees", "Journal lists ที่เข้มขึ้นสัมพันธ์กับ APC ที่สูงขึ้นเล็กน้อย")}
           queryId="curated_lists" sourceRows={curatedRows} showHeading={false}>
           <RichNarrative
-            id="apc-list-section:body" className="report-analysis" label="Edit journal-list interpretation"
-            value={`## Journal lists ที่เข้มขึ้นสัมพันธ์กับ APC ที่สูงขึ้นเล็กน้อย
+            id={narrativeId("apc-list-section:body")} className="report-analysis" label="Edit journal-list interpretation"
+            value={text(en.lists, `## Journal lists ที่เข้มขึ้นสัมพันธ์กับ APC ที่สูงขึ้นเล็กน้อย
 
 Norway คือทะเบียนช่องทางตีพิมพ์ของนอร์เวย์ JUFO คือระบบประเมินช่องทางตีพิมพ์ของฟินแลนด์ และ ABDC คือบัญชีวารสารด้านธุรกิจของออสเตรเลีย ทั้งสามระบบแสดงลำดับราคาโดยรวมตามระดับคัดสรร แต่ช่วงราคาของแต่ละระดับยังซ้อนทับกันมาก ความต่างของมัธยฐานอยู่ในหลักร้อยดอลลาร์: Norway level 2 สูงกว่า level 1 ราว ${usd(528)}, JUFO level 3 สูงกว่า level 1 ราว ${usd(635)} และ ABDC A* สูงกว่า C ราว ${usd(610)} รายละเอียดเกณฑ์และข้อจำกัดอยู่ในอภิธานศัพท์ท้ายรายงาน
 
-วารสารใน CWTS Core มีราคากลาง ${usd(3137)} เทียบกับ ${usd(200)} สำหรับวารสารนอกบัญชี กลุ่มทั้งสองมีองค์ประกอบต่างกัน และ OpenAlex มีข้อมูลราคาไม่ครบทุกวารสาร ส่วนต่างนี้จึงยังบอกไม่ได้ว่าการเข้าบัญชีทำให้ราคาเพิ่มขึ้นเท่าไร`}
+วารสารใน CWTS Core มีราคากลาง ${usd(3137)} เทียบกับ ${usd(200)} สำหรับวารสารนอกบัญชี กลุ่มทั้งสองมีองค์ประกอบต่างกัน และ OpenAlex มีข้อมูลราคาไม่ครบทุกวารสาร ส่วนต่างนี้จึงยังบอกไม่ได้ว่าการเข้าบัญชีทำให้ราคาเพิ่มขึ้นเท่าไร`)}
           />
         </ReportSection>
         <EvidenceChart
-          id="apc-list-chart" queryId="curated_lists" title="APC มัธยฐานในรายการ Norway, JUFO และ ABDC"
-          description="แต่ละระบบมีเกณฑ์และขอบเขตสาขาต่างกัน จึงควรอ่านแนวโน้มภายในระบบ"
+          id="apc-list-chart" queryId="curated_lists" title={text("Median APC by Norway, JUFO, and ABDC level", "APC มัธยฐานในรายการ Norway, JUFO และ ABDC")}
+          description={text("Compare levels within each system; criteria and disciplinary coverage differ across systems", "แต่ละระบบมีเกณฑ์และขอบเขตสาขาต่างกัน จึงควรอ่านแนวโน้มภายในระบบ")}
           spec={curatedSpec} rows={curated} sourceRows={curatedRows} height={470}
         />
       </section>
 
       <section className="report-section">
-        <ReportSection id="apc-field-section" title="ความสัมพันธ์ต่างกันมากระหว่างสาขา"
-          queryId="field_correlations" sourceRows={fieldScoped.sourceRows}
-          scopeFilters={fieldScoped.scopeFilters} showHeading={false}>
+        <ReportSection id="apc-field-section" title={text("The price–citation relationship varies across fields", "ความสัมพันธ์ต่างกันมากระหว่างสาขา")}
+          queryId="field_correlations" sourceRows={fieldRows} showHeading={false}>
           <RichNarrative
-            id="apc-field-section:body" className="report-analysis" label="Edit field interpretation"
-            value={selectedFieldRow
-              ? `## ผลของสาขา ${selectedFieldLabel}
+            id={narrativeId("apc-field-section:body")} className="report-analysis" label="Edit field interpretation"
+            value={text(en.fields, `## ความสัมพันธ์ต่างกันมากระหว่างสาขา
 
-วารสาร ${number(selectedFieldRow.n)} แห่งให้ค่าความสัมพันธ์ ${selectedFieldRow.spearman_rho.toFixed(2)} ระหว่างค่าตีพิมพ์กับการอ้างอิงในช่วงสองปี จึง${fieldStrength} ภาพนี้ใช้เปรียบเทียบแนวโน้มของวารสารในสาขาเดียวกันและไม่บอกว่าวารสารรายใดเหมาะกับบทความหนึ่งเรื่อง`
-              : `## ความสัมพันธ์ต่างกันมากระหว่างสาขา
-
-ธุรกิจ การจัดการ และการบัญชีมีความสัมพันธ์ระหว่างค่าตีพิมพ์กับการอ้างอิงสองปีสูงสุดในกลุ่มสาขาที่มีวารสารอย่างน้อย 250 แห่ง โดยอยู่ที่ 0.61 ส่วนศิลปศาสตร์และมนุษยศาสตร์กับวิทยาการคอมพิวเตอร์อยู่ใกล้ 0.12–0.14 ผลรวมทุกสาขาจึงไม่เหมาะสำหรับใช้ทำนายวารสารรายชื่อหนึ่งโดยไม่ดูสาขา`}
+ธุรกิจ การจัดการ และการบัญชีมีความสัมพันธ์ระหว่างค่าตีพิมพ์กับการอ้างอิงสองปีสูงสุดในกลุ่มสาขาที่มีวารสารอย่างน้อย 250 แห่ง โดยอยู่ที่ 0.61 ส่วนศิลปศาสตร์และมนุษยศาสตร์กับวิทยาการคอมพิวเตอร์อยู่ใกล้ 0.12–0.14 ผลรวมทุกสาขาจึงไม่เหมาะสำหรับใช้ทำนายวารสารรายชื่อหนึ่งโดยไม่ดูสาขา`)}
           />
         </ReportSection>
         <EvidenceChart
           id="apc-field-chart" queryId="field_correlations"
-          title={selectedFieldRow
-            ? `ค่าตีพิมพ์กับการอ้างอิงสองปีในสาขา ${selectedFieldLabel}`
-            : "ค่าตีพิมพ์กับการอ้างอิงสองปี แยกตามสาขา"}
-          description={selectedFieldRow
-            ? `ค่าความสัมพันธ์คำนวณจากวารสาร ${number(selectedFieldRow.n)} แห่งในสาขาที่เลือก`
-            : "แสดงสาขาที่มีวารสารอย่างน้อย 250 แห่ง กดตัวเลือกด้านบนเพื่อดูสาขาอื่น"}
-          spec={fieldSpec} rows={fields} sourceRows={fieldScoped.sourceRows}
-          scopeFilters={fieldScoped.scopeFilters} height={selectedFieldRow ? 180 : 650}
+          title={text("APC and two-year mean citedness: comparison across fields", "ค่าตีพิมพ์กับการอ้างอิงสองปี เปรียบเทียบระหว่างสาขา")}
+          description={text("Fields with at least 250 journals with recorded APCs", "แสดงสาขาที่มีวารสารอย่างน้อย 250 แห่งที่มีข้อมูล APC")}
+          spec={fieldSpec} rows={fields} sourceRows={fieldRows} height={650}
         />
       </section>
 
       <ReportSection
-        id="apc-glossary" title="อภิธานศัพท์และระบบจัดอันดับวารสาร" queryId="curated_lists"
+        id="apc-glossary" title={text("Glossary and journal classification systems", "อภิธานศัพท์และระบบจัดอันดับวารสาร")} queryId="curated_lists"
         queryIds={["curated_lists", "overview", "correlations"]}
         sourceRowsByQuery={{ curated_lists: curatedRows, overview: overviewRows, correlations: allCorrelations }}
         showHeading={false} className="report-glossary"
       >
         <RichNarrative
-          id="apc-glossary:body" className="report-analysis" label="Edit glossary"
+          id={narrativeId("apc-glossary:body")} className="report-analysis" label="Edit glossary"
           sourcePreviews={sourcePreviews}
-          value={`## อภิธานศัพท์และระบบจัดอันดับวารสาร
+          value={text(en.glossary, `## อภิธานศัพท์และระบบจัดอันดับวารสาร
 
 ### Norway หรือ Norwegian Register
 
@@ -430,19 +399,19 @@ Norway คือทะเบียนช่องทางตีพิมพ์�
 
 ### Fixed effects, robust standard errors และ sensitivity model
 
-*Field fixed effects* คือการใส่ตัวแปรควบคุมสำหรับแต่ละสาขาในโมเดล เพื่อเปรียบเทียบความสัมพันธ์หลังหักความต่างเฉลี่ยระหว่างสาขา *HC1 robust standard errors* ปรับการคำนวณความไม่แน่นอนให้ทนต่อความแปรปรวนของเศษเหลือที่ไม่เท่ากัน ส่วน *sensitivity model* คือการวิเคราะห์เสริมเพื่อดูว่าทิศทางผลยังอยู่หรือไม่เมื่อเพิ่มตัวแปรควบคุม โมเดลเหล่านี้ช่วยตรวจความคงทนของ association แต่ไม่ได้เปลี่ยนข้อมูลเชิงสังเกตให้เป็นหลักฐานเชิงเหตุ`}
+*Field fixed effects* คือการใส่ตัวแปรควบคุมสำหรับแต่ละสาขาในโมเดล เพื่อเปรียบเทียบความสัมพันธ์หลังหักความต่างเฉลี่ยระหว่างสาขา *HC1 robust standard errors* ปรับการคำนวณความไม่แน่นอนให้ทนต่อความแปรปรวนของเศษเหลือที่ไม่เท่ากัน ส่วน *sensitivity model* คือการวิเคราะห์เสริมเพื่อดูว่าทิศทางผลยังอยู่หรือไม่เมื่อเพิ่มตัวแปรควบคุม โมเดลเหล่านี้ช่วยตรวจความคงทนของ association แต่ไม่ได้เปลี่ยนข้อมูลเชิงสังเกตให้เป็นหลักฐานเชิงเหตุ`)}
         />
       </ReportSection>
 
       <ReportSection
-        id="apc-methods-limitations" title="Methods and limitations" queryId="overview"
+        id="apc-methods-limitations" title={text("Methods and limitations", "วิธีวิเคราะห์และข้อจำกัด")} queryId="overview"
         queryIds={["overview", "correlations", "quartiles", "curated_lists", "field_correlations", "adjusted_model", "coverage"]}
         sourceRowsByQuery={allSources} showHeading={false} className="report-methods"
       >
         <RichNarrative
-          id="apc-methods-limitations:body" className="report-caveat" label="Edit methods and limitations"
+          id={narrativeId("apc-methods-limitations:body")} className="report-caveat" label="Edit methods and limitations"
           sourcePreviews={sourcePreviews}
-          value={`## Methods and limitations
+          value={text(en.methods(number(overview?.journals)), `## วิธีวิเคราะห์และข้อจำกัด
 
 ### ข้อมูลและประชากร
 
@@ -454,7 +423,7 @@ Norway คือทะเบียนช่องทางตีพิมพ์�
 
 ### สถิติ
 
-ใช้ Spearman rank correlation เพราะ APC และ citation metrics เบ้มาก ค่ามัธยฐานราย quartile ใช้ bootstrap 2,000 ครั้งเพื่อสร้างช่วง 95% sensitivity model ใช้ log APC เฉพาะค่าบวก ควบคุม log h-index, log 2-year mean citedness, log works count, OA, DOAJ, CWTS Core และ field fixed effects พร้อม HC1 robust standard errors โมเดลนี้ช่วยตรวจความคงทนของ association แต่ไม่ระบุสาเหตุ
+ใช้ Spearman rank correlation เพราะ APC และ citation metrics เบ้มาก ค่ามัธยฐานราย quartile ใช้ bootstrap 2,000 ครั้งเพื่อสร้างช่วง 95% sensitivity model ใช้ log APC เฉพาะค่าบวก ควบคุม log(1+h-index), log(1+2-year mean citedness), log(1+works count), OA, DOAJ, CWTS Core และ field fixed effects พร้อม HC1 robust standard errors ตัวแปรต่อเนื่องทั้งสามถูกปรับให้มีค่าเฉลี่ยศูนย์และส่วนเบี่ยงเบนมาตรฐานหนึ่ง โมเดลนี้ช่วยตรวจความคงทนของ association แต่ไม่ระบุสาเหตุ
 
 ### Coverage และ selection
 
@@ -466,7 +435,7 @@ OpenAlex มี journal sources ทั้งหมด 217,114 แห่ง แ�
 
 ### ขอบเขตข้อสรุป
 
-ผลทั้งหมดเป็นความสัมพันธ์ระดับวารสารในภาพตัดขวาง APC สูงอาจสะท้อนสำนักพิมพ์ สาขา โมเดล OA อายุ ขนาด ชื่อเสียง และอำนาจตั้งราคา หลักฐานนี้รองรับข้อสรุปว่า APC และ citation signals เคลื่อนไปในทิศทางเดียวกันโดยเฉลี่ย และไม่รองรับข้อสรุปว่าเพิ่ม APC แล้วคุณภาพสูงขึ้นหรือวารสารแพงกว่าดีกว่าเสมอ`}
+ผลทั้งหมดเป็นความสัมพันธ์ระดับวารสารในภาพตัดขวาง APC สูงอาจสะท้อนสำนักพิมพ์ สาขา โมเดล OA อายุ ขนาด ชื่อเสียง และอำนาจตั้งราคา หลักฐานนี้รองรับข้อสรุปว่า APC และ citation signals เคลื่อนไปในทิศทางเดียวกันโดยเฉลี่ย และไม่รองรับข้อสรุปว่าเพิ่ม APC แล้วคุณภาพสูงขึ้นหรือวารสารแพงกว่าดีกว่าเสมอ`)}
         />
       </ReportSection>
     </article>
