@@ -1,0 +1,7 @@
+/* User-requested removal of the two publication-header buttons.
+   Edit-mode Save/Cancel and all other report controls retain their behavior. */
+.dashboard-topbar .dashboard-ask-button[aria-label="Ask ChatGPT"],
+.dashboard-topbar .dashboard-publish-button[aria-label="Publish"],
+.dashboard-topbar .dashboard-publish-button[aria-label="Publish changes"] {
+  display: none !important;
+}

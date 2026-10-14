@@ -21,7 +21,8 @@ export function addAnalytics(input, output) {
   gtag("config", "${measurementId}", { anonymize_ip: true });
 </script>
 `;
-  const html = original.replace("<head>", `<head>\n<meta name="author" content="Punpiti Piamsa-nga">${analytics}`);
+  const publicStyles = readFileSync(new URL("./public-report.css", import.meta.url), "utf8");
+  const html = original.replace("<head>", `<head>\n<meta name="author" content="Punpiti Piamsa-nga">\n<style id="apc-public-report-controls">${publicStyles}</style>${analytics}`);
   writeFileSync(output, html);
   return { measurementId, bytes: Buffer.byteLength(html), sha256: createHash("sha256").update(html).digest("hex") };
 }
