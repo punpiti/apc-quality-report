@@ -42,6 +42,12 @@
   justify-content: flex-end;
 }
 
+.report-page .report-byline :is(.rich-narrative-content, .report-rich-editable) {
+  color: var(--secondary);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
 .report-eyebrow {
   color: var(--secondary);
   font-size: 12px;

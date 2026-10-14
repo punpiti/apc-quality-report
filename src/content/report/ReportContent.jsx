@@ -201,6 +201,10 @@ export function ReportContent() {
           id={narrativeId("apc-report:description")} className="report-deck" label="Edit report introduction"
           value={text(en.introduction, "เปรียบเทียบค่าตีพิมพ์ที่วารสารประกาศเรียกเก็บต่อบทความ (APC) กับการอ้างอิง จำนวนผลงาน และระดับจัดอันดับ เพื่อดูว่าวารสารราคาแพงมีลักษณะอย่างไร")}
         />
+        <RichNarrative
+          id={narrativeId("apc-report:byline")} className="report-byline" label="Edit author byline"
+          value={text("Prepared by Punpiti Piamsa-nga", "จัดทำโดย พันธุ์ปิติ เปี่ยมสง่า")}
+        />
       </header>
 
       <ReportSection
