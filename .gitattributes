@@ -1,0 +1,6 @@
+* text=auto eol=lf
+*.html text eol=lf
+*.csv text eol=lf
+*.json text eol=lf
+# Preserve compiler output byte-for-byte with the deployed report.
+site/*.html whitespace=-blank-at-eol

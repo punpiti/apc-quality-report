@@ -1,0 +1,11 @@
+population,metric,n,spearman_rho,p_value
+All known APC values (including USD 0),2-year mean citedness,15176,0.3368715907552667,0.0
+All known APC values (including USD 0),h-index,15176,0.6370379722569064,0.0
+All known APC values (including USD 0),i10-index,15176,0.6092877382693365,0.0
+All known APC values (including USD 0),Lifetime citations,15176,0.6257321948473817,0.0
+All known APC values (including USD 0),Works count,15176,0.545815622501637,0.0
+Positive APC only,2-year mean citedness,14516,0.3697409035412971,0.0
+Positive APC only,h-index,14516,0.6309859130106726,0.0
+Positive APC only,i10-index,14516,0.5968122120922943,0.0
+Positive APC only,Lifetime citations,14516,0.6159031718125685,0.0
+Positive APC only,Works count,14516,0.5284407137295406,0.0

@@ -1,0 +1,1364 @@
+{
+  "id": "report:d8ca7fea-2e6b-4936-af64-63d73e7158f6",
+  "title": "APC สูงสัมพันธ์กับตัวชี้วัดการอ้างอิง แต่ราคาไม่ใช่คะแนนคุณภาพ",
+  "surface": "report",
+  "status": "observed",
+  "buildStatus": "complete",
+  "generatedAt": "2026-10-14T11:06:27.622230+00:00",
+  "filters": [],
+  "report": {
+    "asOf": "2026-10-14",
+    "originalQuestion": "ความสัมพันธ์ระหว่าง APC กับ Q, h-index และตัวชี้วัดคุณภาพวารสารอื่นใน OpenAlex เป็นอย่างไร"
+  },
+  "queries": {
+    "overview": {
+      "label": "Population and headline statistics",
+      "rows": [
+        {
+          "journals": 15176,
+          "zero_apc_journals": 660,
+          "positive_apc_journals": 14516,
+          "median_apc_usd": 2900,
+          "median_positive_apc_usd": 2990,
+          "apc_p25_usd": 1354.5,
+          "apc_p75_usd": 3640,
+          "apc_max_usd": 12690
+        }
+      ],
+      "source": {
+        "label": "OpenAlex Sources API: journals with recorded APC",
+        "urls": [
+          "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+          "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+        ],
+        "executedAt": "2026-10-14T11:06:27.622230+00:00",
+        "freshness": "Source records updated through 2026-10-13T10:02:38+00:00",
+        "metricDefinitions": [
+          {
+            "field": "apc_usd",
+            "label": "APC list price (USD)",
+            "definition": "Current advertised journal APC converted to USD by OpenAlex; zero denotes a recorded no-fee price.",
+            "componentIds": [
+              "apc-executive-summary",
+              "apc-key-metrics",
+              "apc-correlation-chart",
+              "apc-quartile-chart",
+              "apc-list-chart",
+              "apc-field-chart",
+              "apc-interpretation",
+              "apc-methods-limitations"
+            ],
+            "sourceLineage": [
+              {
+                "urls": [
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+                ]
+              }
+            ]
+          },
+          {
+            "field": "two_year_mean_citedness",
+            "label": "2-year mean citedness",
+            "definition": "OpenAlex citation-impact convenience metric using citations in the prior year to works from the two years before that.",
+            "componentIds": [
+              "apc-executive-summary",
+              "apc-key-metrics",
+              "apc-correlation-chart",
+              "apc-quartile-chart",
+              "apc-list-chart",
+              "apc-field-chart",
+              "apc-interpretation",
+              "apc-methods-limitations"
+            ],
+            "sourceLineage": [
+              {
+                "urls": [
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+                ]
+              }
+            ]
+          },
+          {
+            "field": "h_index",
+            "label": "h-index",
+            "definition": "Largest h such that at least h works from the journal have at least h citations in OpenAlex.",
+            "componentIds": [
+              "apc-executive-summary",
+              "apc-key-metrics",
+              "apc-correlation-chart",
+              "apc-quartile-chart",
+              "apc-list-chart",
+              "apc-field-chart",
+              "apc-interpretation",
+              "apc-methods-limitations"
+            ],
+            "sourceLineage": [
+              {
+                "urls": [
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+                ]
+              }
+            ]
+          },
+          {
+            "field": "openalex_q_field",
+            "label": "OpenAlex field-adjusted quartile",
+            "definition": "Quartile of 2-year mean citedness within the journal's dominant OpenAlex field; Q1 is the top 25%.",
+            "formula": "descending percentile rank of two_year_mean_citedness within dominant_field",
+            "componentIds": [
+              "apc-quartile-chart",
+              "apc-interpretation",
+              "apc-methods-limitations"
+            ],
+            "sourceLineage": [
+              {
+                "urls": [
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+                ]
+              }
+            ]
+          }
+        ],
+        "evidenceFlow": [
+          {
+            "title": "OpenAlex Sources API",
+            "detail": "Cursor-paged every source with type=journal and a recorded APC in USD, including USD 0 and positive values. Selected journal identity, APC, summary citation statistics, source-list membership, OA flags, and topics."
+          },
+          {
+            "title": "Analysis",
+            "detail": "Deduplicated on OpenAlex source ID; no duplicates were removed. Descriptive statistics use all recorded APC values."
+          }
+        ],
+        "caveats": [
+          "APC is the current advertised list price converted to USD, not the amount an author paid.",
+          "OpenAlex APC coverage is selective and is thinner for hybrid journals.",
+          "Associations are descriptive and do not identify a causal effect of price on quality.",
+          "OpenAlex-derived quartiles are not Scopus/SCImago or Journal Citation Reports quartiles."
+        ]
+      }
+    },
+    "correlations": {
+      "label": "Spearman associations between APC and journal metrics",
+      "rows": [
+        {
+          "population": "All known APC values (including USD 0)",
+          "metric": "2-year mean citedness",
+          "n": 15176,
+          "spearman_rho": 0.3369,
+          "p_value": 0
+        },
+        {
+          "population": "All known APC values (including USD 0)",
+          "metric": "h-index",
+          "n": 15176,
+          "spearman_rho": 0.637,
+          "p_value": 0
+        },
+        {
+          "population": "All known APC values (including USD 0)",
+          "metric": "i10-index",
+          "n": 15176,
+          "spearman_rho": 0.6093,
+          "p_value": 0
+        },
+        {
+          "population": "All known APC values (including USD 0)",
+          "metric": "Lifetime citations",
+          "n": 15176,
+          "spearman_rho": 0.6257,
+          "p_value": 0
+        },
+        {
+          "population": "All known APC values (including USD 0)",
+          "metric": "Works count",
+          "n": 15176,
+          "spearman_rho": 0.5458,
+          "p_value": 0
+        },
+        {
+          "population": "Positive APC only",
+          "metric": "2-year mean citedness",
+          "n": 14516,
+          "spearman_rho": 0.3697,
+          "p_value": 0
+        },
+        {
+          "population": "Positive APC only",
+          "metric": "h-index",
+          "n": 14516,
+          "spearman_rho": 0.631,
+          "p_value": 0
+        },
+        {
+          "population": "Positive APC only",
+          "metric": "i10-index",
+          "n": 14516,
+          "spearman_rho": 0.5968,
+          "p_value": 0
+        },
+        {
+          "population": "Positive APC only",
+          "metric": "Lifetime citations",
+          "n": 14516,
+          "spearman_rho": 0.6159,
+          "p_value": 0
+        },
+        {
+          "population": "Positive APC only",
+          "metric": "Works count",
+          "n": 14516,
+          "spearman_rho": 0.5284,
+          "p_value": 0
+        }
+      ],
+      "source": {
+        "label": "OpenAlex APC and summary statistics",
+        "urls": [
+          "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+          "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+        ],
+        "executedAt": "2026-10-14T11:06:27.622230+00:00",
+        "freshness": "Source records updated through 2026-10-13T10:02:38+00:00",
+        "metricDefinitions": [
+          {
+            "field": "apc_usd",
+            "label": "APC list price (USD)",
+            "definition": "Current advertised journal APC converted to USD by OpenAlex; zero denotes a recorded no-fee price.",
+            "componentIds": [
+              "apc-executive-summary",
+              "apc-key-metrics",
+              "apc-correlation-chart",
+              "apc-quartile-chart",
+              "apc-list-chart",
+              "apc-field-chart",
+              "apc-interpretation",
+              "apc-methods-limitations"
+            ],
+            "sourceLineage": [
+              {
+                "urls": [
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+                ]
+              }
+            ]
+          },
+          {
+            "field": "two_year_mean_citedness",
+            "label": "2-year mean citedness",
+            "definition": "OpenAlex citation-impact convenience metric using citations in the prior year to works from the two years before that.",
+            "componentIds": [
+              "apc-executive-summary",
+              "apc-key-metrics",
+              "apc-correlation-chart",
+              "apc-quartile-chart",
+              "apc-list-chart",
+              "apc-field-chart",
+              "apc-interpretation",
+              "apc-methods-limitations"
+            ],
+            "sourceLineage": [
+              {
+                "urls": [
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+                ]
+              }
+            ]
+          },
+          {
+            "field": "h_index",
+            "label": "h-index",
+            "definition": "Largest h such that at least h works from the journal have at least h citations in OpenAlex.",
+            "componentIds": [
+              "apc-executive-summary",
+              "apc-key-metrics",
+              "apc-correlation-chart",
+              "apc-quartile-chart",
+              "apc-list-chart",
+              "apc-field-chart",
+              "apc-interpretation",
+              "apc-methods-limitations"
+            ],
+            "sourceLineage": [
+              {
+                "urls": [
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+                ]
+              }
+            ]
+          },
+          {
+            "field": "openalex_q_field",
+            "label": "OpenAlex field-adjusted quartile",
+            "definition": "Quartile of 2-year mean citedness within the journal's dominant OpenAlex field; Q1 is the top 25%.",
+            "formula": "descending percentile rank of two_year_mean_citedness within dominant_field",
+            "componentIds": [
+              "apc-quartile-chart",
+              "apc-interpretation",
+              "apc-methods-limitations"
+            ],
+            "sourceLineage": [
+              {
+                "urls": [
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+                ]
+              }
+            ]
+          }
+        ],
+        "evidenceFlow": [
+          {
+            "title": "OpenAlex Sources API",
+            "detail": "Cursor-paged every source with type=journal and a recorded APC in USD, including USD 0 and positive values. Selected journal identity, APC, summary citation statistics, source-list membership, OA flags, and topics."
+          },
+          {
+            "title": "Analysis",
+            "detail": "Pairwise Spearman rank correlations, reported for all recorded APC values and for positive APC values only."
+          }
+        ],
+        "caveats": [
+          "APC is the current advertised list price converted to USD, not the amount an author paid.",
+          "OpenAlex APC coverage is selective and is thinner for hybrid journals.",
+          "Associations are descriptive and do not identify a causal effect of price on quality.",
+          "OpenAlex-derived quartiles are not Scopus/SCImago or Journal Citation Reports quartiles."
+        ]
+      }
+    },
+    "quartiles": {
+      "label": "APC by OpenAlex field-adjusted citedness quartile",
+      "rows": [
+        {
+          "grouping": "OpenAlex field-adjusted quartile",
+          "group": "Q1",
+          "n": 3779,
+          "median_apc_usd": 3280,
+          "mean_apc_usd": 3228.3,
+          "p25_apc_usd": 2300,
+          "p75_apc_usd": 4022,
+          "median_ci_low": 3190,
+          "median_ci_high": 3290
+        },
+        {
+          "grouping": "OpenAlex field-adjusted quartile",
+          "group": "Q2",
+          "n": 3798,
+          "median_apc_usd": 3160,
+          "mean_apc_usd": 2861.52,
+          "p25_apc_usd": 2172,
+          "p75_apc_usd": 3680,
+          "median_ci_low": 3090,
+          "median_ci_high": 3190
+        },
+        {
+          "grouping": "OpenAlex field-adjusted quartile",
+          "group": "Q3",
+          "n": 3787,
+          "median_apc_usd": 2990,
+          "mean_apc_usd": 2536.85,
+          "p25_apc_usd": 1449,
+          "p75_apc_usd": 3550,
+          "median_ci_low": 2900,
+          "median_ci_high": 3000
+        },
+        {
+          "grouping": "OpenAlex field-adjusted quartile",
+          "group": "Q4",
+          "n": 3802,
+          "median_apc_usd": 1500,
+          "mean_apc_usd": 1664.63,
+          "p25_apc_usd": 98,
+          "p75_apc_usd": 3000,
+          "median_ci_low": 1307,
+          "median_ci_high": 1680
+        }
+      ],
+      "source": {
+        "label": "OpenAlex-derived field quartiles",
+        "urls": [
+          "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+          "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+        ],
+        "executedAt": "2026-10-14T11:06:27.622230+00:00",
+        "freshness": "Source records updated through 2026-10-13T10:02:38+00:00",
+        "metricDefinitions": [
+          {
+            "field": "apc_usd",
+            "label": "APC list price (USD)",
+            "definition": "Current advertised journal APC converted to USD by OpenAlex; zero denotes a recorded no-fee price.",
+            "componentIds": [
+              "apc-executive-summary",
+              "apc-key-metrics",
+              "apc-correlation-chart",
+              "apc-quartile-chart",
+              "apc-list-chart",
+              "apc-field-chart",
+              "apc-interpretation",
+              "apc-methods-limitations"
+            ],
+            "sourceLineage": [
+              {
+                "urls": [
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+                ]
+              }
+            ]
+          },
+          {
+            "field": "two_year_mean_citedness",
+            "label": "2-year mean citedness",
+            "definition": "OpenAlex citation-impact convenience metric using citations in the prior year to works from the two years before that.",
+            "componentIds": [
+              "apc-executive-summary",
+              "apc-key-metrics",
+              "apc-correlation-chart",
+              "apc-quartile-chart",
+              "apc-list-chart",
+              "apc-field-chart",
+              "apc-interpretation",
+              "apc-methods-limitations"
+            ],
+            "sourceLineage": [
+              {
+                "urls": [
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+                ]
+              }
+            ]
+          },
+          {
+            "field": "h_index",
+            "label": "h-index",
+            "definition": "Largest h such that at least h works from the journal have at least h citations in OpenAlex.",
+            "componentIds": [
+              "apc-executive-summary",
+              "apc-key-metrics",
+              "apc-correlation-chart",
+              "apc-quartile-chart",
+              "apc-list-chart",
+              "apc-field-chart",
+              "apc-interpretation",
+              "apc-methods-limitations"
+            ],
+            "sourceLineage": [
+              {
+                "urls": [
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+                ]
+              }
+            ]
+          },
+          {
+            "field": "openalex_q_field",
+            "label": "OpenAlex field-adjusted quartile",
+            "definition": "Quartile of 2-year mean citedness within the journal's dominant OpenAlex field; Q1 is the top 25%.",
+            "formula": "descending percentile rank of two_year_mean_citedness within dominant_field",
+            "componentIds": [
+              "apc-quartile-chart",
+              "apc-interpretation",
+              "apc-methods-limitations"
+            ],
+            "sourceLineage": [
+              {
+                "urls": [
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+                ]
+              }
+            ]
+          }
+        ],
+        "evidenceFlow": [
+          {
+            "title": "OpenAlex Sources API",
+            "detail": "Cursor-paged every source with type=journal and a recorded APC in USD, including USD 0 and positive values. Selected journal identity, APC, summary citation statistics, source-list membership, OA flags, and topics."
+          },
+          {
+            "title": "Analysis",
+            "detail": "Assigned Q1-Q4 within dominant OpenAlex field using 2-year mean citedness; medians include 2,000 bootstrap draws for 95% intervals."
+          }
+        ],
+        "caveats": [
+          "APC is the current advertised list price converted to USD, not the amount an author paid.",
+          "OpenAlex APC coverage is selective and is thinner for hybrid journals.",
+          "Associations are descriptive and do not identify a causal effect of price on quality.",
+          "OpenAlex-derived quartiles are not Scopus/SCImago or Journal Citation Reports quartiles."
+        ]
+      }
+    },
+    "curated_lists": {
+      "label": "APC by curated source-list membership or level",
+      "rows": [
+        {
+          "grouping": "CWTS Core",
+          "group": "False",
+          "n": 3134,
+          "median_apc_usd": 200,
+          "mean_apc_usd": 1197.84,
+          "p25_apc_usd": 39,
+          "p75_apc_usd": 2712,
+          "median_ci_low": 173.99,
+          "median_ci_high": 230
+        },
+        {
+          "grouping": "CWTS Core",
+          "group": "True",
+          "n": 12042,
+          "median_apc_usd": 3137,
+          "mean_apc_usd": 2928.26,
+          "p25_apc_usd": 2160,
+          "p75_apc_usd": 3747.5,
+          "median_ci_low": 3090,
+          "median_ci_high": 3176.06
+        },
+        {
+          "grouping": "DOAJ",
+          "group": "False",
+          "n": 9155,
+          "median_apc_usd": 3400,
+          "mean_apc_usd": 3304.1,
+          "p25_apc_usd": 2860,
+          "p75_apc_usd": 3900,
+          "median_ci_low": 3400,
+          "median_ci_high": 3400
+        },
+        {
+          "grouping": "DOAJ",
+          "group": "True",
+          "n": 6021,
+          "median_apc_usd": 1270,
+          "mean_apc_usd": 1456.1,
+          "p25_apc_usd": 150,
+          "p75_apc_usd": 2353,
+          "median_ci_low": 1207,
+          "median_ci_high": 1390
+        },
+        {
+          "grouping": "MEDLINE",
+          "group": "False",
+          "n": 11967,
+          "median_apc_usd": 2610,
+          "mean_apc_usd": 2269.04,
+          "p25_apc_usd": 980,
+          "p75_apc_usd": 3400,
+          "median_ci_low": 2570,
+          "median_ci_high": 2645
+        },
+        {
+          "grouping": "MEDLINE",
+          "group": "True",
+          "n": 3209,
+          "median_apc_usd": 3690,
+          "mean_apc_usd": 3696.65,
+          "p25_apc_usd": 3020,
+          "p75_apc_usd": 4320,
+          "median_ci_low": 3650,
+          "median_ci_high": 3740
+        },
+        {
+          "grouping": "Norwegian Register level",
+          "group": "1",
+          "n": 9071,
+          "median_apc_usd": 3190,
+          "mean_apc_usd": 2948.62,
+          "p25_apc_usd": 2310,
+          "p75_apc_usd": 3700,
+          "median_ci_low": 3180,
+          "median_ci_high": 3190
+        },
+        {
+          "grouping": "Norwegian Register level",
+          "group": "2",
+          "n": 1387,
+          "median_apc_usd": 3718,
+          "mean_apc_usd": 4015.59,
+          "p25_apc_usd": 3290,
+          "p75_apc_usd": 4390,
+          "median_ci_low": 3650,
+          "median_ci_high": 3790
+        },
+        {
+          "grouping": "JUFO level",
+          "group": "1",
+          "n": 7429,
+          "median_apc_usd": 3190,
+          "mean_apc_usd": 2958.93,
+          "p25_apc_usd": 2390,
+          "p75_apc_usd": 3690,
+          "median_ci_low": 3190,
+          "median_ci_high": 3190
+        },
+        {
+          "grouping": "JUFO level",
+          "group": "2",
+          "n": 1513,
+          "median_apc_usd": 3650,
+          "mean_apc_usd": 3646.36,
+          "p25_apc_usd": 3090,
+          "p75_apc_usd": 4170,
+          "median_ci_low": 3590,
+          "median_ci_high": 3650
+        },
+        {
+          "grouping": "JUFO level",
+          "group": "3",
+          "n": 878,
+          "median_apc_usd": 3825,
+          "mean_apc_usd": 4246.09,
+          "p25_apc_usd": 3400,
+          "p75_apc_usd": 4507.5,
+          "median_ci_low": 3699.5,
+          "median_ci_high": 3900
+        },
+        {
+          "grouping": "ABDC rating",
+          "group": "A",
+          "n": 375,
+          "median_apc_usd": 3550,
+          "mean_apc_usd": 3532.2,
+          "p25_apc_usd": 3135,
+          "p75_apc_usd": 3900,
+          "median_ci_low": 3510,
+          "median_ci_high": 3650
+        },
+        {
+          "grouping": "ABDC rating",
+          "group": "A*",
+          "n": 146,
+          "median_apc_usd": 3900,
+          "mean_apc_usd": 3916.55,
+          "p25_apc_usd": 3535,
+          "p75_apc_usd": 4250,
+          "median_ci_low": 3805,
+          "median_ci_high": 3920
+        },
+        {
+          "grouping": "ABDC rating",
+          "group": "B",
+          "n": 340,
+          "median_apc_usd": 3295,
+          "mean_apc_usd": 3188.84,
+          "p25_apc_usd": 2937.5,
+          "p75_apc_usd": 3650,
+          "median_ci_low": 3245,
+          "median_ci_high": 3395
+        },
+        {
+          "grouping": "ABDC rating",
+          "group": "C",
+          "n": 181,
+          "median_apc_usd": 3290,
+          "mean_apc_usd": 2884.61,
+          "p25_apc_usd": 2700,
+          "p75_apc_usd": 3650,
+          "median_ci_low": 3090,
+          "median_ci_high": 3390
+        }
+      ],
+      "source": {
+        "label": "OpenAlex source-list memberships",
+        "urls": [
+          "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+          "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+        ],
+        "executedAt": "2026-10-14T11:06:27.622230+00:00",
+        "freshness": "Source records updated through 2026-10-13T10:02:38+00:00",
+        "metricDefinitions": [
+          {
+            "field": "apc_usd",
+            "label": "APC list price (USD)",
+            "definition": "Current advertised journal APC converted to USD by OpenAlex; zero denotes a recorded no-fee price.",
+            "componentIds": [
+              "apc-executive-summary",
+              "apc-key-metrics",
+              "apc-correlation-chart",
+              "apc-quartile-chart",
+              "apc-list-chart",
+              "apc-field-chart",
+              "apc-interpretation",
+              "apc-methods-limitations"
+            ],
+            "sourceLineage": [
+              {
+                "urls": [
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+                ]
+              }
+            ]
+          },
+          {
+            "field": "two_year_mean_citedness",
+            "label": "2-year mean citedness",
+            "definition": "OpenAlex citation-impact convenience metric using citations in the prior year to works from the two years before that.",
+            "componentIds": [
+              "apc-executive-summary",
+              "apc-key-metrics",
+              "apc-correlation-chart",
+              "apc-quartile-chart",
+              "apc-list-chart",
+              "apc-field-chart",
+              "apc-interpretation",
+              "apc-methods-limitations"
+            ],
+            "sourceLineage": [
+              {
+                "urls": [
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+                ]
+              }
+            ]
+          },
+          {
+            "field": "h_index",
+            "label": "h-index",
+            "definition": "Largest h such that at least h works from the journal have at least h citations in OpenAlex.",
+            "componentIds": [
+              "apc-executive-summary",
+              "apc-key-metrics",
+              "apc-correlation-chart",
+              "apc-quartile-chart",
+              "apc-list-chart",
+              "apc-field-chart",
+              "apc-interpretation",
+              "apc-methods-limitations"
+            ],
+            "sourceLineage": [
+              {
+                "urls": [
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+                ]
+              }
+            ]
+          },
+          {
+            "field": "openalex_q_field",
+            "label": "OpenAlex field-adjusted quartile",
+            "definition": "Quartile of 2-year mean citedness within the journal's dominant OpenAlex field; Q1 is the top 25%.",
+            "formula": "descending percentile rank of two_year_mean_citedness within dominant_field",
+            "componentIds": [
+              "apc-quartile-chart",
+              "apc-interpretation",
+              "apc-methods-limitations"
+            ],
+            "sourceLineage": [
+              {
+                "urls": [
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+                ]
+              }
+            ]
+          }
+        ],
+        "evidenceFlow": [
+          {
+            "title": "OpenAlex Sources API",
+            "detail": "Cursor-paged every source with type=journal and a recorded APC in USD, including USD 0 and positive values. Selected journal identity, APC, summary citation statistics, source-list membership, OA flags, and topics."
+          },
+          {
+            "title": "Analysis",
+            "detail": "Grouped recorded APC values by CWTS Core, DOAJ, MEDLINE, Norwegian Register, JUFO, and ABDC memberships loaded by OpenAlex."
+          }
+        ],
+        "caveats": [
+          "APC is the current advertised list price converted to USD, not the amount an author paid.",
+          "OpenAlex APC coverage is selective and is thinner for hybrid journals.",
+          "Associations are descriptive and do not identify a causal effect of price on quality.",
+          "OpenAlex-derived quartiles are not Scopus/SCImago or Journal Citation Reports quartiles."
+        ]
+      }
+    },
+    "field_correlations": {
+      "label": "APC versus 2-year mean citedness within fields",
+      "rows": [
+        {
+          "field": "Business, Management and Accounting",
+          "n": 509,
+          "spearman_rho": 0.6138,
+          "p_value": 0
+        },
+        {
+          "field": "Dentistry",
+          "n": 134,
+          "spearman_rho": 0.5586,
+          "p_value": 0
+        },
+        {
+          "field": "Immunology and Microbiology",
+          "n": 134,
+          "spearman_rho": 0.5426,
+          "p_value": 0
+        },
+        {
+          "field": "Agricultural and Biological Sciences",
+          "n": 895,
+          "spearman_rho": 0.5412,
+          "p_value": 0
+        },
+        {
+          "field": "Nursing",
+          "n": 120,
+          "spearman_rho": 0.5374,
+          "p_value": 0
+        },
+        {
+          "field": "Social Sciences",
+          "n": 1888,
+          "spearman_rho": 0.4102,
+          "p_value": 0
+        },
+        {
+          "field": "Medicine",
+          "n": 3131,
+          "spearman_rho": 0.3961,
+          "p_value": 0
+        },
+        {
+          "field": "Psychology",
+          "n": 522,
+          "spearman_rho": 0.3865,
+          "p_value": 0
+        },
+        {
+          "field": "Biochemistry, Genetics and Molecular Biology",
+          "n": 903,
+          "spearman_rho": 0.3618,
+          "p_value": 0
+        },
+        {
+          "field": "Environmental Science",
+          "n": 683,
+          "spearman_rho": 0.3592,
+          "p_value": 0
+        },
+        {
+          "field": "Neuroscience",
+          "n": 286,
+          "spearman_rho": 0.3488,
+          "p_value": 0
+        },
+        {
+          "field": "Pharmacology, Toxicology and Pharmaceutics",
+          "n": 107,
+          "spearman_rho": 0.3484,
+          "p_value": 0.00023575
+        },
+        {
+          "field": "Chemistry",
+          "n": 259,
+          "spearman_rho": 0.3398,
+          "p_value": 2e-8
+        },
+        {
+          "field": "Earth and Planetary Sciences",
+          "n": 315,
+          "spearman_rho": 0.2935,
+          "p_value": 1.1e-7
+        },
+        {
+          "field": "Engineering",
+          "n": 1520,
+          "spearman_rho": 0.2869,
+          "p_value": 0
+        },
+        {
+          "field": "Health Professions",
+          "n": 339,
+          "spearman_rho": 0.2728,
+          "p_value": 3.4e-7
+        },
+        {
+          "field": "Mathematics",
+          "n": 401,
+          "spearman_rho": 0.2544,
+          "p_value": 2.4e-7
+        },
+        {
+          "field": "Physics and Astronomy",
+          "n": 299,
+          "spearman_rho": 0.2384,
+          "p_value": 0.00003119
+        },
+        {
+          "field": "Veterinary",
+          "n": 94,
+          "spearman_rho": 0.235,
+          "p_value": 0.02262741
+        },
+        {
+          "field": "Decision Sciences",
+          "n": 170,
+          "spearman_rho": 0.2317,
+          "p_value": 0.00236468
+        },
+        {
+          "field": "Economics, Econometrics and Finance",
+          "n": 492,
+          "spearman_rho": 0.2111,
+          "p_value": 0.00000231
+        },
+        {
+          "field": "Materials Science",
+          "n": 348,
+          "spearman_rho": 0.1494,
+          "p_value": 0.00522176
+        },
+        {
+          "field": "Computer Science",
+          "n": 686,
+          "spearman_rho": 0.1448,
+          "p_value": 0.00014169
+        },
+        {
+          "field": "Energy",
+          "n": 110,
+          "spearman_rho": 0.1297,
+          "p_value": 0.17675598
+        },
+        {
+          "field": "Arts and Humanities",
+          "n": 790,
+          "spearman_rho": 0.1231,
+          "p_value": 0.00052336
+        }
+      ],
+      "source": {
+        "label": "OpenAlex APC, topics, and 2-year mean citedness",
+        "urls": [
+          "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+          "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+        ],
+        "executedAt": "2026-10-14T11:06:27.622230+00:00",
+        "freshness": "Source records updated through 2026-10-13T10:02:38+00:00",
+        "metricDefinitions": [
+          {
+            "field": "apc_usd",
+            "label": "APC list price (USD)",
+            "definition": "Current advertised journal APC converted to USD by OpenAlex; zero denotes a recorded no-fee price.",
+            "componentIds": [
+              "apc-executive-summary",
+              "apc-key-metrics",
+              "apc-correlation-chart",
+              "apc-quartile-chart",
+              "apc-list-chart",
+              "apc-field-chart",
+              "apc-interpretation",
+              "apc-methods-limitations"
+            ],
+            "sourceLineage": [
+              {
+                "urls": [
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+                ]
+              }
+            ]
+          },
+          {
+            "field": "two_year_mean_citedness",
+            "label": "2-year mean citedness",
+            "definition": "OpenAlex citation-impact convenience metric using citations in the prior year to works from the two years before that.",
+            "componentIds": [
+              "apc-executive-summary",
+              "apc-key-metrics",
+              "apc-correlation-chart",
+              "apc-quartile-chart",
+              "apc-list-chart",
+              "apc-field-chart",
+              "apc-interpretation",
+              "apc-methods-limitations"
+            ],
+            "sourceLineage": [
+              {
+                "urls": [
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+                ]
+              }
+            ]
+          },
+          {
+            "field": "h_index",
+            "label": "h-index",
+            "definition": "Largest h such that at least h works from the journal have at least h citations in OpenAlex.",
+            "componentIds": [
+              "apc-executive-summary",
+              "apc-key-metrics",
+              "apc-correlation-chart",
+              "apc-quartile-chart",
+              "apc-list-chart",
+              "apc-field-chart",
+              "apc-interpretation",
+              "apc-methods-limitations"
+            ],
+            "sourceLineage": [
+              {
+                "urls": [
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+                ]
+              }
+            ]
+          },
+          {
+            "field": "openalex_q_field",
+            "label": "OpenAlex field-adjusted quartile",
+            "definition": "Quartile of 2-year mean citedness within the journal's dominant OpenAlex field; Q1 is the top 25%.",
+            "formula": "descending percentile rank of two_year_mean_citedness within dominant_field",
+            "componentIds": [
+              "apc-quartile-chart",
+              "apc-interpretation",
+              "apc-methods-limitations"
+            ],
+            "sourceLineage": [
+              {
+                "urls": [
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+                ]
+              }
+            ]
+          }
+        ],
+        "evidenceFlow": [
+          {
+            "title": "OpenAlex Sources API",
+            "detail": "Cursor-paged every source with type=journal and a recorded APC in USD, including USD 0 and positive values. Selected journal identity, APC, summary citation statistics, source-list membership, OA flags, and topics."
+          },
+          {
+            "title": "Analysis",
+            "detail": "Calculated Spearman correlations separately for dominant fields with at least 50 journals in the APC-known population."
+          }
+        ],
+        "caveats": [
+          "APC is the current advertised list price converted to USD, not the amount an author paid.",
+          "OpenAlex APC coverage is selective and is thinner for hybrid journals.",
+          "Associations are descriptive and do not identify a causal effect of price on quality.",
+          "OpenAlex-derived quartiles are not Scopus/SCImago or Journal Citation Reports quartiles."
+        ]
+      }
+    },
+    "adjusted_model": {
+      "label": "Descriptive multivariable sensitivity model",
+      "rows": [
+        {
+          "n": 14516,
+          "term": "log_h_index",
+          "coefficient_log_apc": -0.07964492021348446,
+          "robust_se": 0.02036330348753462,
+          "percent_difference": -7.655581545725354,
+          "ci95_low_percent": -11.268656609485738,
+          "ci95_high_percent": -3.895384721856887
+        },
+        {
+          "n": 14516,
+          "term": "log_two_year",
+          "coefficient_log_apc": 0.3279600991490404,
+          "robust_se": 0.010545651901451882,
+          "percent_difference": 38.81335834731632,
+          "ci95_low_percent": 35.97360790884512,
+          "ci95_high_percent": 41.71241575481495
+        },
+        {
+          "n": 14516,
+          "term": "log_works",
+          "coefficient_log_apc": 0.07202768614755974,
+          "robust_se": 0.016171965620476486,
+          "percent_difference": 7.468509754212294,
+          "ci95_low_percent": 4.11549580304289,
+          "ci95_high_percent": 10.929506695521841
+        },
+        {
+          "n": 14516,
+          "term": "is_oa",
+          "coefficient_log_apc": -1.6650861773619323,
+          "robust_se": 0.0634197991192041,
+          "percent_difference": -81.08256452673295,
+          "ci95_low_percent": -83.29377837641982,
+          "ci95_high_percent": -78.57867727672762
+        },
+        {
+          "n": 14516,
+          "term": "is_in_doaj",
+          "coefficient_log_apc": 0.4222485086517037,
+          "robust_se": 0.06426135955050351,
+          "percent_difference": 52.53875495891187,
+          "ci95_low_percent": 34.4868506960224,
+          "ci95_high_percent": 73.01373066581252
+        },
+        {
+          "n": 14516,
+          "term": "is_core",
+          "coefficient_log_apc": 1.2600339472617523,
+          "robust_se": 0.03166661469776302,
+          "percent_difference": 252.5541167802801,
+          "ci95_low_percent": 231.33752487685948,
+          "ci95_high_percent": 275.12927430998644
+        }
+      ],
+      "source": {
+        "label": "OpenAlex descriptive sensitivity model",
+        "urls": [
+          "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+          "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+        ],
+        "executedAt": "2026-10-14T11:06:27.622230+00:00",
+        "freshness": "Source records updated through 2026-10-13T10:02:38+00:00",
+        "metricDefinitions": [
+          {
+            "field": "apc_usd",
+            "label": "APC list price (USD)",
+            "definition": "Current advertised journal APC converted to USD by OpenAlex; zero denotes a recorded no-fee price.",
+            "componentIds": [
+              "apc-executive-summary",
+              "apc-key-metrics",
+              "apc-correlation-chart",
+              "apc-quartile-chart",
+              "apc-list-chart",
+              "apc-field-chart",
+              "apc-interpretation",
+              "apc-methods-limitations"
+            ],
+            "sourceLineage": [
+              {
+                "urls": [
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+                ]
+              }
+            ]
+          },
+          {
+            "field": "two_year_mean_citedness",
+            "label": "2-year mean citedness",
+            "definition": "OpenAlex citation-impact convenience metric using citations in the prior year to works from the two years before that.",
+            "componentIds": [
+              "apc-executive-summary",
+              "apc-key-metrics",
+              "apc-correlation-chart",
+              "apc-quartile-chart",
+              "apc-list-chart",
+              "apc-field-chart",
+              "apc-interpretation",
+              "apc-methods-limitations"
+            ],
+            "sourceLineage": [
+              {
+                "urls": [
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+                ]
+              }
+            ]
+          },
+          {
+            "field": "h_index",
+            "label": "h-index",
+            "definition": "Largest h such that at least h works from the journal have at least h citations in OpenAlex.",
+            "componentIds": [
+              "apc-executive-summary",
+              "apc-key-metrics",
+              "apc-correlation-chart",
+              "apc-quartile-chart",
+              "apc-list-chart",
+              "apc-field-chart",
+              "apc-interpretation",
+              "apc-methods-limitations"
+            ],
+            "sourceLineage": [
+              {
+                "urls": [
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+                ]
+              }
+            ]
+          },
+          {
+            "field": "openalex_q_field",
+            "label": "OpenAlex field-adjusted quartile",
+            "definition": "Quartile of 2-year mean citedness within the journal's dominant OpenAlex field; Q1 is the top 25%.",
+            "formula": "descending percentile rank of two_year_mean_citedness within dominant_field",
+            "componentIds": [
+              "apc-quartile-chart",
+              "apc-interpretation",
+              "apc-methods-limitations"
+            ],
+            "sourceLineage": [
+              {
+                "urls": [
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+                ]
+              }
+            ]
+          }
+        ],
+        "evidenceFlow": [
+          {
+            "title": "OpenAlex Sources API",
+            "detail": "Cursor-paged every source with type=journal and a recorded APC in USD, including USD 0 and positive values. Selected journal identity, APC, summary citation statistics, source-list membership, OA flags, and topics."
+          },
+          {
+            "title": "Analysis",
+            "detail": "OLS of log positive APC on standardized log h-index, standardized log 2-year citedness, standardized log works count, OA/DOAJ/Core flags, and dominant-field fixed effects; HC1 robust standard errors."
+          }
+        ],
+        "caveats": [
+          "APC is the current advertised list price converted to USD, not the amount an author paid.",
+          "OpenAlex APC coverage is selective and is thinner for hybrid journals.",
+          "Associations are descriptive and do not identify a causal effect of price on quality.",
+          "OpenAlex-derived quartiles are not Scopus/SCImago or Journal Citation Reports quartiles."
+        ]
+      }
+    },
+    "coverage": {
+      "label": "OpenAlex APC coverage",
+      "rows": [
+        {
+          "population": "All OpenAlex journal sources",
+          "n": 217114
+        },
+        {
+          "population": "Active in 2025 or 2026",
+          "n": 88583
+        },
+        {
+          "population": "Active with known positive APC",
+          "n": 13467
+        },
+        {
+          "population": "Active with recorded USD 0 APC",
+          "n": 607
+        }
+      ],
+      "source": {
+        "label": "OpenAlex Sources API counts",
+        "urls": [
+          "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+          "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+        ],
+        "executedAt": "2026-10-14T11:06:27.622230+00:00",
+        "freshness": "Source records updated through 2026-10-13T10:02:38+00:00",
+        "metricDefinitions": [
+          {
+            "field": "apc_usd",
+            "label": "APC list price (USD)",
+            "definition": "Current advertised journal APC converted to USD by OpenAlex; zero denotes a recorded no-fee price.",
+            "componentIds": [
+              "apc-executive-summary",
+              "apc-key-metrics",
+              "apc-correlation-chart",
+              "apc-quartile-chart",
+              "apc-list-chart",
+              "apc-field-chart",
+              "apc-interpretation",
+              "apc-methods-limitations"
+            ],
+            "sourceLineage": [
+              {
+                "urls": [
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+                ]
+              }
+            ]
+          },
+          {
+            "field": "two_year_mean_citedness",
+            "label": "2-year mean citedness",
+            "definition": "OpenAlex citation-impact convenience metric using citations in the prior year to works from the two years before that.",
+            "componentIds": [
+              "apc-executive-summary",
+              "apc-key-metrics",
+              "apc-correlation-chart",
+              "apc-quartile-chart",
+              "apc-list-chart",
+              "apc-field-chart",
+              "apc-interpretation",
+              "apc-methods-limitations"
+            ],
+            "sourceLineage": [
+              {
+                "urls": [
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+                ]
+              }
+            ]
+          },
+          {
+            "field": "h_index",
+            "label": "h-index",
+            "definition": "Largest h such that at least h works from the journal have at least h citations in OpenAlex.",
+            "componentIds": [
+              "apc-executive-summary",
+              "apc-key-metrics",
+              "apc-correlation-chart",
+              "apc-quartile-chart",
+              "apc-list-chart",
+              "apc-field-chart",
+              "apc-interpretation",
+              "apc-methods-limitations"
+            ],
+            "sourceLineage": [
+              {
+                "urls": [
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+                ]
+              }
+            ]
+          },
+          {
+            "field": "openalex_q_field",
+            "label": "OpenAlex field-adjusted quartile",
+            "definition": "Quartile of 2-year mean citedness within the journal's dominant OpenAlex field; Q1 is the top 25%.",
+            "formula": "descending percentile rank of two_year_mean_citedness within dominant_field",
+            "componentIds": [
+              "apc-quartile-chart",
+              "apc-interpretation",
+              "apc-methods-limitations"
+            ],
+            "sourceLineage": [
+              {
+                "urls": [
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A%3E0&per-page=100&cursor=*",
+                  "https://api.openalex.org/sources?filter=type%3Ajournal%2Capc_usd%3A0&per-page=100&cursor=*"
+                ]
+              }
+            ]
+          }
+        ],
+        "evidenceFlow": [
+          {
+            "title": "OpenAlex Sources API",
+            "detail": "Cursor-paged every source with type=journal and a recorded APC in USD, including USD 0 and positive values. Selected journal identity, APC, summary citation statistics, source-list membership, OA flags, and topics."
+          },
+          {
+            "title": "Analysis",
+            "detail": "Counts were read from API metadata on 2026-10-14 using journal type, last-publication-year, and APC filters."
+          }
+        ],
+        "caveats": [
+          "APC is the current advertised list price converted to USD, not the amount an author paid.",
+          "OpenAlex APC coverage is selective and is thinner for hybrid journals.",
+          "Associations are descriptive and do not identify a causal effect of price on quality.",
+          "OpenAlex-derived quartiles are not Scopus/SCImago or Journal Citation Reports quartiles."
+        ]
+      }
+    }
+  }
+}

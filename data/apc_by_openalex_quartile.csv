@@ -1,0 +1,5 @@
+grouping,group,n,median_apc_usd,mean_apc_usd,p25_apc_usd,p75_apc_usd,median_ci_low,median_ci_high
+OpenAlex field-adjusted quartile,Q1,3779,3280.0,3228.299550145541,2300.0,4022.0,3190.0,3290.0
+OpenAlex field-adjusted quartile,Q2,3798,3160.0,2861.515007898894,2172.0,3680.0,3090.0,3190.0
+OpenAlex field-adjusted quartile,Q3,3787,2990.0,2536.8505413255875,1449.0,3550.0,2900.0,3000.0
+OpenAlex field-adjusted quartile,Q4,3802,1500.0,1664.6267753813781,98.0,3000.0,1307.0,1680.0

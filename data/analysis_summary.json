@@ -1,0 +1,73 @@
+{
+  "generated_at": "2026-10-14T11:06:27.622230+00:00",
+  "openalex_max_updated_at": "2026-10-13T10:02:38+00:00",
+  "n_journals": 15176,
+  "n_zero_apc": 660,
+  "n_positive_apc": 14516,
+  "n_with_two_year_mean_citedness": 15176,
+  "n_with_h_index": 15176,
+  "apc_usd": {
+    "median_all": 2900.0,
+    "median_positive": 2990.0,
+    "p25": 1354.5,
+    "p75": 3640.0,
+    "p95": 4590.0,
+    "max": 12690.0
+  },
+  "duplicate_openalex_ids_removed": 0,
+  "adjusted_model": {
+    "n": 14516,
+    "k": 30,
+    "rows": [
+      {
+        "term": "log_h_index",
+        "coefficient_log_apc": -0.07964492021348446,
+        "robust_se": 0.02036330348753462,
+        "percent_difference": -7.655581545725354,
+        "ci95_low_percent": -11.268656609485738,
+        "ci95_high_percent": -3.895384721856887
+      },
+      {
+        "term": "log_two_year",
+        "coefficient_log_apc": 0.3279600991490404,
+        "robust_se": 0.010545651901451882,
+        "percent_difference": 38.81335834731632,
+        "ci95_low_percent": 35.97360790884512,
+        "ci95_high_percent": 41.71241575481495
+      },
+      {
+        "term": "log_works",
+        "coefficient_log_apc": 0.07202768614755974,
+        "robust_se": 0.016171965620476486,
+        "percent_difference": 7.468509754212294,
+        "ci95_low_percent": 4.11549580304289,
+        "ci95_high_percent": 10.929506695521841
+      },
+      {
+        "term": "is_oa",
+        "coefficient_log_apc": -1.6650861773619323,
+        "robust_se": 0.0634197991192041,
+        "percent_difference": -81.08256452673295,
+        "ci95_low_percent": -83.29377837641982,
+        "ci95_high_percent": -78.57867727672762
+      },
+      {
+        "term": "is_in_doaj",
+        "coefficient_log_apc": 0.4222485086517037,
+        "robust_se": 0.06426135955050351,
+        "percent_difference": 52.53875495891187,
+        "ci95_low_percent": 34.4868506960224,
+        "ci95_high_percent": 73.01373066581252
+      },
+      {
+        "term": "is_core",
+        "coefficient_log_apc": 1.2600339472617523,
+        "robust_se": 0.03166661469776302,
+        "percent_difference": 252.5541167802801,
+        "ci95_low_percent": 231.33752487685948,
+        "ci95_high_percent": 275.12927430998644
+      }
+    ],
+    "field_reference": "Agricultural and Biological Sciences"
+  }
+}
